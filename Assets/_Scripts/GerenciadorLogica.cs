@@ -442,9 +442,11 @@ public class GerenciadorLogica : MonoBehaviour
         lacunasGeradasNaMissao.Clear();
         respostasEsperadasLacunas.Clear(); // Limpa as respostas antigas
 
-        // 2. Monta o código linha por linha
-        foreach (LinhaDeContrato linha in contratoAtivo.linhasDoCodigo)
+        // 2. Monta o código linha por linha (Trocado para 'for' para sabermos o número da linha)
+        for (int indexLinha = 0; indexLinha < contratoAtivo.linhasDoCodigo.Length; indexLinha++)
         {
+            LinhaDeContrato linha = contratoAtivo.linhasDoCodigo[indexLinha];
+
             // Cria a "bandeja" horizontal para esta linha específica
             GameObject objLinha = Instantiate(prefabLinhaHorizontal, areaCodigoPai, false);
 
@@ -453,7 +455,19 @@ public class GerenciadorLogica : MonoBehaviour
                 // Injeta o texto na linha
                 GameObject txtObj = Instantiate(prefabTextoCodigo, objLinha.transform, false);
                 TMP_Text tmpTexto = txtObj.GetComponent<TMP_Text>();
-                tmpTexto.text = linha.fragmentos[i];
+
+                // --- A NOVA LÓGICA DE NUMERAÇÃO ---
+                // Se for o primeiríssimo pedaço de texto da linha, colocamos o número da linha na frente dele
+                if (i == 0)
+                {
+                    tmpTexto.text = $"{indexLinha + 1}  |  {linha.fragmentos[i]}";
+                }
+                else
+                {
+                    // Se for os próximos pedaços (depois de um buraco), mantém o texto normal
+                    tmpTexto.text = linha.fragmentos[i];
+                }
+
                 tmpTexto.ForceMeshUpdate();
 
                 // Se houver uma resposta associada a este texto, injeta um buraco ao lado
@@ -496,7 +510,7 @@ public class GerenciadorLogica : MonoBehaviour
             // Escreve o primeiro fragmento da linha como texto
             if (tmpTexto != null && contratoAtivo.linhasDoCodigo[i].fragmentos.Length > 0)
             {
-                tmpTexto.text = $"{i + 1}: {contratoAtivo.linhasDoCodigo[i].fragmentos[0]}";
+                tmpTexto.text = $"{i + 1}  |  {contratoAtivo.linhasDoCodigo[i].fragmentos[0]}";
                 tmpTexto.ForceMeshUpdate();
             }
 
@@ -574,7 +588,7 @@ public class GerenciadorLogica : MonoBehaviour
         // 3. Preenche os Textos na Tela
         if (textoAcertos != null) textoAcertos.text = $"Acertos: {acertos}";
         if (textoErros != null) textoErros.text = $"Erros: {errosCometidosNaMissao}";
-        if (textoXP != null) textoXP.text = $"XP Ganho: {contratoAtivo.xpGanho}";
+        if (textoXP != null) textoXP.text = $"XP Ganho: <color=#00B2D4>{contratoAtivo.xpGanho}</color>";
 
         // Mostramos o ganho real de produção no texto de base
         if (textoDinheiroBase != null) textoDinheiroBase.text = $"Pagamento Base: + ${dinheiroProporcional:F2}";
@@ -588,8 +602,7 @@ public class GerenciadorLogica : MonoBehaviour
         }
 
         // 5. Mostra a Tela
-        if (painelCodeReview != null) painelCodeReview.SetActive(false);
-        if (painelCodigoVazado != null) painelCodigoVazado.SetActive(false);
+        
 
         painelFeedback.SetActive(true);
         janelaAtivaAtual = painelFeedback;
@@ -610,6 +623,9 @@ public class GerenciadorLogica : MonoBehaviour
 
         // Limpeza visual
         LimparMinigames();
+
+        if (painelCodeReview != null) painelCodeReview.SetActive(false);
+        if (painelCodigoVazado != null) painelCodigoVazado.SetActive(false);
 
         // Volta para o quadro
         if (painelQuadroContratos != null) painelQuadroContratos.SetActive(true);

@@ -12,7 +12,19 @@ public class AreaDeDrop : MonoBehaviour, IDropHandler
 
             if (bloco != null)
             {
-                // Se for um bloco válido, define este painel como o novo "pai" dele
+                // --- NOVA LÓGICA DE BLOQUEIO ---
+                // Verifica se este objeto onde estamos soltando a peça é um buraco de código
+                if (this.gameObject.name == "Buraco_Lacuna")
+                {
+                    // Se já tiver algum filho (peça) dentro deste buraco, rejeitamos a nova peça
+                    if (transform.childCount > 0)
+                    {
+                        return;
+                    }
+                }
+
+                // Se passou pelo teste acima (buraco vazio) ou se for o Painel de Ferramentas (que cabe vários),
+                // define este painel como o novo "pai" do bloco.
                 bloco.paiOriginal = this.transform;
             }
         }
