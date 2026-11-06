@@ -1,0 +1,364 @@
+fileFormatVersion: 2
+guid: dc856d8ff3b106e458ede03638e88d85
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4118155935107695364
+    second: "\xCDcone Glossy de Documento Azul_0"
+  - first:
+      213: 4435522692180939043
+    second: "\xCDcone Glossy de Documento Azul_1"
+  - first:
+      213: 2104146650095115258
+    second: "\xCDcone Glossy de Documento Azul_2"
+  - first:
+      213: 5613423872691980998
+    second: "\xCDcone Glossy de Documento Azul_3"
+  - first:
+      213: -5791183531440652262
+    second: "\xCDcone Glossy de Documento Azul_4"
+  - first:
+      213: 6833589818569742901
+    second: "\xCDcone Glossy de Documento Azul_5"
+  - first:
+      213: -5724430737669572216
+    second: "\xCDcone Glossy de Documento Azul_6"
+  - first:
+      213: -2311780633414935322
+    second: "\xCDcone Glossy de Documento Azul_7"
+  - first:
+      213: -4854813505216246889
+    second: "\xCDcone Glossy de Documento Azul_8"
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "\xCDcone Glossy de Documento Azul_0"
+      rect:
+        serializedVersion: 2
+        x: 444
+        y: 1247
+        width: 13
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 403c2c90101a62930800000000000000
+      internalID: 4118155935107695364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\xCDcone Glossy de Documento Azul_1"
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 1239
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32111ac53642e8d30800000000000000
+      internalID: 4435522692180939043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\xCDcone Glossy de Documento Azul_2"
+      rect:
+        serializedVersion: 2
+        x: 845
+        y: 1243
+        width: 22
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afb5f32ea3e633d10800000000000000
+      internalID: 2104146650095115258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\xCDcone Glossy de Documento Azul_3"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 19
+        width: 1225
+        height: 1208
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cac0816543e6ed40800000000000000
+      internalID: 5613423872691980998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\xCDcone Glossy de Documento Azul_4"
+      rect:
+        serializedVersion: 2
+        x: 1221
+        y: 1044
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a10436bd24591afa0800000000000000
+      internalID: -5791183531440652262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\xCDcone Glossy de Documento Azul_5"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 970
+        width: 6
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53a539cebb9c5de50800000000000000
+      internalID: 6833589818569742901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\xCDcone Glossy de Documento Azul_6"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 915
+        width: 6
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 889b0ebc29cbe80b0800000000000000
+      internalID: -5724430737669572216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\xCDcone Glossy de Documento Azul_7"
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 37
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ecdca223c7eaefd0800000000000000
+      internalID: -2311780633414935322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\xCDcone Glossy de Documento Azul_8"
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 21
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79b01d2c6dc30acb0800000000000000
+      internalID: -4854813505216246889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      "\xCDcone Glossy de Documento Azul_0": 4118155935107695364
+      "\xCDcone Glossy de Documento Azul_1": 4435522692180939043
+      "\xCDcone Glossy de Documento Azul_2": 2104146650095115258
+      "\xCDcone Glossy de Documento Azul_3": 5613423872691980998
+      "\xCDcone Glossy de Documento Azul_4": -5791183531440652262
+      "\xCDcone Glossy de Documento Azul_5": 6833589818569742901
+      "\xCDcone Glossy de Documento Azul_6": -5724430737669572216
+      "\xCDcone Glossy de Documento Azul_7": -2311780633414935322
+      "\xCDcone Glossy de Documento Azul_8": -4854813505216246889
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

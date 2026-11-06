@@ -71,6 +71,7 @@ public class GerenciadorLogica : MonoBehaviour
 
     [Header("Sistema de Feedback")]
     public GameObject painelFeedback; // O novo painel visual de resultados
+    public TMP_Text textoStatus;
     public TMP_Text textoAcertos;
     public TMP_Text textoErros;
     public TMP_Text textoXP;
@@ -78,8 +79,14 @@ public class GerenciadorLogica : MonoBehaviour
     public TMP_Text textoPenalidades;
     public TMP_Text textoPagamentoTotal;
 
-    public float valorPenalidadePorErro = 15f; // Quanto ele perde por cada clique errado
+    public float valorPenalidadePorErro = 15f; // Penalidade em dinheiro por erro
+    public float valorPenalidadeXPPorErro = 5f; // Penalidade em XP por erro (ajustável no Inspector)
     private int errosCometidosNaMissao = 0;    // Contador interno
+    private int acertosNaMissao = 0;
+    private int totalDesafiosNaMissao = 0;
+    private bool missaoFinalizada = false;
+    private bool pagamentoProcessado = false;
+    private bool limiteDeErrosAtingido = false;
     public int limiteDeErros = 3;
 
     private List<GameObject> lacunasGeradasNaMissao = new List<GameObject>();
@@ -295,8 +302,20 @@ public class GerenciadorLogica : MonoBehaviour
     // --- NOVA FUNÇÃO: O jogador clicou no botão "Aceitar" do quadro ---
     public void AceitarContrato(Contrato contratoEscolhido, GameObject botaoClicado)
     {
+        if (contratoEscolhido == null)
+        {
+            Debug.LogWarning("Não foi possível iniciar a missão: contrato nulo.");
+            return;
+        }
+
         contratoAtivo = contratoEscolhido;
         errosCometidosNaMissao = 0;
+        acertosNaMissao = 0;
+        totalDesafiosNaMissao = 0;
+        missaoFinalizada = false;
+        pagamentoProcessado = false;
+        limiteDeErrosAtingido = false;
+        bugsEncontradosNaMissao.Clear();
         botaoDoContratoAtual = botaoClicado;
         painelQuadroContratos.SetActive(false);
 
@@ -337,82 +356,92 @@ public class GerenciadorLogica : MonoBehaviour
     // Essa função será chamada pelo botão "Validar Código"
     public void ValidarLacuna()
     {
-        if (contratoAtivo == null) return;
+        // Uma missão só pode ser entregue uma vez.
+        if (contratoAtivo == null || missaoFinalizada) return;
 
-        int errosNestaEntrega = 0; // Contador isolado para sabermos como ele entregou o tabuleiro
+        int errosNestaEntrega = 0;
+        int acertosNestaEntrega = 0;
+        totalDesafiosNaMissao = Mathf.Min(lacunasGeradasNaMissao.Count, respostasEsperadasLacunas.Count);
 
-        // 1. Varre todas as lacunas geradas de uma vez só
+        // Se as listas não estiverem alinhadas, trata a configuração como erro em vez de pagar acertos inexistentes.
+        if (lacunasGeradasNaMissao.Count != respostasEsperadasLacunas.Count)
+        {
+            Debug.LogWarning("A missão tem quantidade diferente de lacunas e respostas esperadas. Confira a configuração do contrato.");
+        }
+
         for (int i = 0; i < lacunasGeradasNaMissao.Count; i++)
         {
-            Transform buraco = lacunasGeradasNaMissao[i].transform;
+            GameObject lacunaObj = lacunasGeradasNaMissao[i];
 
-            // Cenário A: O jogador deixou o buraco vazio
-            if (buraco.childCount == 0)
+            if (lacunaObj == null || i >= respostasEsperadasLacunas.Count)
             {
                 errosNestaEntrega++;
-                Debug.Log($"<color=red>Erro!</color> A lacuna {i + 1} foi deixada vazia.");
+                continue;
+            }
+
+            Transform buraco = lacunaObj.transform;
+            BlocoArrastavel bloco = null;
+
+            // Procura uma peça válida entre os filhos, sem presumir que o primeiro filho seja o bloco.
+            for (int childIndex = 0; childIndex < buraco.childCount; childIndex++)
+            {
+                bloco = buraco.GetChild(childIndex).GetComponent<BlocoArrastavel>();
+                if (bloco != null) break;
+            }
+
+            if (bloco == null)
+            {
+                errosNestaEntrega++;
+                Debug.Log($"Lacuna {i + 1} vazia ou sem um bloco válido.");
+            }
+            else if (bloco.idDoBloco == respostasEsperadasLacunas[i])
+            {
+                acertosNestaEntrega++;
             }
             else
             {
-                // Cenário B: O jogador colocou uma peça, vamos ver se é a certa
-                BlocoArrastavel bloco = buraco.GetChild(0).GetComponent<BlocoArrastavel>();
-
-                if (bloco != null && bloco.idDoBloco != respostasEsperadasLacunas[i])
-                {
-                    errosNestaEntrega++;
-                    Debug.Log($"<color=red>Código Incorreto!</color> A peça na lacuna {i + 1} está errada.");
-                }
+                errosNestaEntrega++;
+                Debug.Log($"A peça na lacuna {i + 1} está incorreta.");
             }
         }
 
-        // Adiciona os erros desta entrega no contador global da missão
+        acertosNaMissao = acertosNestaEntrega;
         errosCometidosNaMissao += errosNestaEntrega;
 
-        if (errosNestaEntrega == 0)
+        if (errosCometidosNaMissao >= Mathf.Max(1, limiteDeErros))
         {
-            Debug.Log($"<color=green>Sucesso absoluto!</color> Todas as lacunas foram preenchidas corretamente.");
-        }
-        else
-        {
-            Debug.Log($"<color=orange>Contrato entregue com falhas!</color> Total de erros: {errosNestaEntrega}");
+            limiteDeErrosAtingido = true;
+            Debug.Log("Limite de erros atingido. O jogador não receberá dinheiro nem XP.");
         }
 
-        // 2. Independente de ele ter acertado tudo ou errado tudo, o contrato acaba AQUI!
+        Debug.Log(errosNestaEntrega == 0
+            ? "Missão entregue sem erros."
+            : $"Missão entregue com {errosNestaEntrega} erro(s).");
+
+        // A missão é encerrada no primeiro envio; não é possível reenviar para farmar recompensa.
         AbrirTelaDeFeedback();
     }
 
-    // Atenção aos novos parâmetros da função!
     public void ValidarBug(string idLinhaClicada, GameObject botaoClicado)
     {
-        if (contratoAtivo == null) return;
+        if (contratoAtivo == null || missaoFinalizada || string.IsNullOrEmpty(idLinhaClicada)) return;
 
-        bool ehUmBugReal = false;
+        // Conta apenas linhas marcadas como bug no contrato.
+        bool ehUmBugReal = respostasEsperadasLacunas.Contains(idLinhaClicada);
 
-        Image imgBotao = botaoClicado.GetComponent<Image>();
-        Button componenteBotao = botaoClicado.GetComponent<Button>();
-
-        // Verifica na lista dinâmica que geramos!
-        foreach (string idCorreto in respostasEsperadasLacunas)
-        {
-            if (idLinhaClicada == idCorreto)
-            {
-                ehUmBugReal = true;
-                break;
-            }
-        }
+        Image imgBotao = botaoClicado != null ? botaoClicado.GetComponent<Image>() : null;
+        Button componenteBotao = botaoClicado != null ? botaoClicado.GetComponent<Button>() : null;
 
         if (ehUmBugReal)
         {
-            // --- ACERTO VISUAL ---
+            if (bugsEncontradosNaMissao.Contains(idLinhaClicada)) return;
+
             if (imgBotao != null) imgBotao.color = new Color(0.2f, 0.8f, 0.2f, 0.5f);
             if (componenteBotao != null) componenteBotao.interactable = false;
 
-            if (!bugsEncontradosNaMissao.Contains(idLinhaClicada))
-            {
-                bugsEncontradosNaMissao.Add(idLinhaClicada);
-            }
+            bugsEncontradosNaMissao.Add(idLinhaClicada);
+            acertosNaMissao = bugsEncontradosNaMissao.Count;
 
-            // Vitória: Encontrou todos os bugs? (Usa o tamanho da lista dinâmica)
             if (bugsEncontradosNaMissao.Count >= respostasEsperadasLacunas.Count)
             {
                 AbrirTelaDeFeedback();
@@ -420,16 +449,15 @@ public class GerenciadorLogica : MonoBehaviour
         }
         else
         {
-            // --- ERRO VISUAL ---
             errosCometidosNaMissao++;
 
             if (imgBotao != null) imgBotao.color = new Color(0.8f, 0.2f, 0.2f, 0.5f);
             if (componenteBotao != null) componenteBotao.interactable = false;
 
-            // --- A REGRA DA JUSTA CAUSA ---
-            if (errosCometidosNaMissao >= limiteDeErros)
+            if (errosCometidosNaMissao >= Mathf.Max(1, limiteDeErros))
             {
-                Debug.Log("<color=red>Demissão!</color> Você cometeu muitos erros. O contrato foi cancelado.");
+                limiteDeErrosAtingido = true;
+                Debug.Log("Limite de erros atingido. O jogador não receberá dinheiro nem XP.");
                 AbrirTelaDeFeedback();
             }
         }
@@ -500,6 +528,8 @@ public class GerenciadorLogica : MonoBehaviour
         foreach (Transform filho in areaCodeReviewPai) Destroy(filho.gameObject);
         bugsEncontradosNaMissao.Clear();
         respostasEsperadasLacunas.Clear(); // Reaproveitamos a lista para guardar os IDs das linhas com bugs!
+        acertosNaMissao = 0;
+        totalDesafiosNaMissao = 0;
 
         // 2. Monta as linhas de código dinamicamente baseadas na Matriz
         for (int i = 0; i < contratoAtivo.linhasDoCodigo.Length; i++)
@@ -530,6 +560,8 @@ public class GerenciadorLogica : MonoBehaviour
             }
         }
 
+        totalDesafiosNaMissao = respostasEsperadasLacunas.Count;
+
         yield return null;
 
         if (telaDaMissao != null)
@@ -557,52 +589,80 @@ public class GerenciadorLogica : MonoBehaviour
 
     private void AbrirTelaDeFeedback()
     {
-        if (contratoAtivo == null || painelFeedback == null) return;
+        if (contratoAtivo == null || painelFeedback == null || missaoFinalizada) return;
 
-        // 1. Identifica o total de desafios que a missão tinha
-        // Usamos uma proteção matemática para garantir que nunca dividiremos por zero
-        int totalDeDesafios = respostasEsperadasLacunas.Count > 0 ? respostasEsperadasLacunas.Count : 1;
+        // Trava primeiro, antes de atualizar UI/pagar, para impedir chamadas repetidas.
+        missaoFinalizada = true;
 
-        // 2. Calcula os acertos reais do jogador
-        int acertos = 0;
         if (contratoAtivo.tipoDaMissao == Contrato.TipoDeMissao.EncontrarBug)
         {
-            acertos = bugsEncontradosNaMissao.Count;
+            totalDesafiosNaMissao = respostasEsperadasLacunas.Count;
+            acertosNaMissao = bugsEncontradosNaMissao.Count;
         }
-        else if (contratoAtivo.tipoDaMissao == Contrato.TipoDeMissao.PreencherLacuna)
+        else
         {
-            acertos = Mathf.Max(0, respostasEsperadasLacunas.Count - errosCometidosNaMissao);
+            totalDesafiosNaMissao = respostasEsperadasLacunas.Count;
         }
 
-        // --- O SEGREDO DA CORREÇÃO FINANCEIRA ---
-        // Em vez de dar o dinheiro bruto, dividimos o prêmio pelo total de lacunas/bugs 
-        // e multiplicamos apenas pelo que ele de fato acertou!
-        float dinheiroProporcional = (contratoAtivo.pagamento / totalDeDesafios) * acertos;
+        // Regra de recompensa:
+        // 1) Ao atingir o limite de erros, não recebe dinheiro nem XP.
+        // 2) Sem nenhum acerto, também não recebe recompensa.
+        // 3) Com pelo menos um acerto e abaixo do limite, recebe dinheiro e XP
+        //    com descontos proporcionais à quantidade de erros.
+        float pagamentoBase = Mathf.Max(0f, contratoAtivo.pagamento);
+        float xpBase = Mathf.Max(0f, contratoAtivo.xpGanho);
 
-        // Calcula a multa pelos erros cometidos
-        float penalidadeTotal = errosCometidosNaMissao * valorPenalidadePorErro;
+        bool temDireitoARecompensa = !limiteDeErrosAtingido && acertosNaMissao >= 1;
 
-        // O total a receber agora é o dinheiro ganho por mérito menos as multas por descuido
-        float totalReceber = Mathf.Max(0, dinheiroProporcional - penalidadeTotal);
+        float penalidadeTotal = errosCometidosNaMissao * Mathf.Max(0f, valorPenalidadePorErro);
+        float penalidadeXP = errosCometidosNaMissao * Mathf.Max(0f, valorPenalidadeXPPorErro);
 
-        // 3. Preenche os Textos na Tela
-        if (textoAcertos != null) textoAcertos.text = $"Acertos: {acertos}";
-        if (textoErros != null) textoErros.text = $"Erros: {errosCometidosNaMissao}";
-        if (textoXP != null) textoXP.text = $"XP Ganho: <color=#00B2D4>{contratoAtivo.xpGanho}</color>";
+        float totalReceber = temDireitoARecompensa
+            ? Mathf.Max(0f, pagamentoBase - penalidadeTotal)
+            : 0f;
 
-        // Mostramos o ganho real de produção no texto de base
-        if (textoDinheiroBase != null) textoDinheiroBase.text = $"Pagamento Base: + ${dinheiroProporcional:F2}";
-        if (textoPenalidades != null) textoPenalidades.text = $"Penalidades: <color=red>- ${penalidadeTotal:F2}</color>";
-        if (textoPagamentoTotal != null) textoPagamentoTotal.text = $"TOTAL RECEBIDO: <color=green>${totalReceber:F2}</color>";
+        float xpRecebido = temDireitoARecompensa
+            ? Mathf.Max(0f, xpBase - penalidadeXP)
+            : 0f;
 
-        // 4. Paga o Jogador apenas se ele tiver saldo positivo para receber
-        if (EconomiaManager.Instancia != null)
+        if (textoAcertos != null) textoAcertos.text = $"Acertos: <color=green>{acertosNaMissao}</color>";
+        if (textoErros != null) textoErros.text = $"Erros: <color=red>{errosCometidosNaMissao}</color>";
+        if (textoXP != null) textoXP.text = $"XP Ganho: <color=#00B2D4>{xpRecebido:F0}</color>";
+        if (textoDinheiroBase != null) textoDinheiroBase.text = $"Pagamento Base: + ${pagamentoBase:F2}";
+        if (textoPenalidades != null)
         {
-            EconomiaManager.Instancia.AdicionarDinheiro(totalReceber);
+            textoPenalidades.text = temDireitoARecompensa
+                ? $"Penalidades: <color=red>- ${penalidadeTotal:F2} | - {penalidadeXP:F0} XP</color>"
+                : "Penalidades: <color=red>Sem recompensa</color>";
         }
 
-        // 5. Mostra a Tela
-        
+        if (textoPagamentoTotal != null)
+        {
+            textoPagamentoTotal.text = temDireitoARecompensa
+                ? $"TOTAL RECEBIDO: <color=green>${totalReceber:F2}</color>"
+                : "TOTAL RECEBIDO: <color=red>$0.00</color>";
+        }
+
+        // O pagamento e o XP são processados no máximo uma vez por missão.
+        if (!pagamentoProcessado)
+        {
+            pagamentoProcessado = true;
+
+            if (temDireitoARecompensa)
+            {
+                if (EconomiaManager.Instancia != null)
+                {
+                    EconomiaManager.Instancia.AdicionarDinheiro(totalReceber);
+                }
+                else
+                {
+                    Debug.LogWarning("EconomiaManager não encontrado; o pagamento não foi aplicado.");
+                }
+
+                // O XP é exibido no feedback. Ainda não existe um sistema de XP
+                // persistente/progressão conectado neste GerenciadorLogica.
+            }
+        }
 
         painelFeedback.SetActive(true);
         janelaAtivaAtual = painelFeedback;

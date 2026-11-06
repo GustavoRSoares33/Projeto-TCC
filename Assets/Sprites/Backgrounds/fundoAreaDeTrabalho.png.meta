@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5fd9cc25833950b45a162f1f12bfe59f
+guid: 7cb812e1a466c014eb17909d8adf05fe
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1822708212713179695
-    second: img_pasta_0
+      213: 3751640589046621615
+    second: fundoAreaDeTrabalho_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: img_pasta_0
+      name: fundoAreaDeTrabalho_0
       rect:
         serializedVersion: 2
-        x: 47
-        y: 63
-        width: 402
-        height: 370
+        x: 0
+        y: 0
+        width: 1672
+        height: 941
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1d53b04a98074b6e0800000000000000
-      internalID: -1822708212713179695
+      spriteID: fa5af0b1d31801430800000000000000
+      internalID: 3751640589046621615
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      img_pasta_0: -1822708212713179695
+      fundoAreaDeTrabalho_0: 3751640589046621615
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

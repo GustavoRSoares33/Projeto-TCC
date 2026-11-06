@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 6121bf3371e5a13408851752420b6247
+guid: 0bca5bec37ac55b478f5cc88d5581dcf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5647666381643643012
-    second: img_lojaIco_0
+      213: -3180645302604699138
+    second: img_loja_0
+  - first:
+      213: -3576595285017625885
+    second: img_loja_1
+  - first:
+      213: 2055433913542450704
+    second: img_loja_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,23 +119,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: img_lojaIco_0
+      name: img_loja_0
       rect:
         serializedVersion: 2
-        x: 57
-        y: 41
-        width: 395
-        height: 396
+        x: 0
+        y: 43
+        width: 1210
+        height: 1163
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c77073839557f91b0800000000000000
-      internalID: -5647666381643643012
+      spriteID: ef96bb5f2f31cd3d0800000000000000
+      internalID: -3180645302604699138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: img_loja_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 624
+        width: 5
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3eaff23b9816d5ec0800000000000000
+      internalID: -3576595285017625885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: img_loja_2
+      rect:
+        serializedVersion: 2
+        x: 695
+        y: 36
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01e1df3114e568c10800000000000000
+      internalID: 2055433913542450704
       vertices: []
       indices: 
       edges: []
@@ -138,7 +188,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 8e8631e9c7fe128478b91c11e9f8d8c7
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +198,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      img_lojaIco_0: -5647666381643643012
+      img_loja_0: -3180645302604699138
+      img_loja_1: -3576595285017625885
+      img_loja_2: 2055433913542450704
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

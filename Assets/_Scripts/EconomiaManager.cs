@@ -1,14 +1,22 @@
 using UnityEngine;
-using TMPro; // NECESSÁRIO PARA MEXER COM TEXTOS MODERNOS
+using TMPro;
+using System.Globalization;
 
 public class EconomiaManager : MonoBehaviour
 {
     public static EconomiaManager Instancia;
 
+    [Header("Dados do Jogador")]
     public float saldoAtual = 0f;
 
     [Header("Interface Visual")]
-    public TMP_Text textoSaldo; // Arraste o seu "Texto_Saldo" para cá na Unity
+    [Tooltip("Texto de saldo usado pelas interfaces atuais, como a loja.")]
+    public TMP_Text textoSaldo;
+
+    [Tooltip("Texto de dinheiro exibido no painel do jogador no Desktop.")]
+    public TMP_Text textoSaldoDesktop;
+
+    private readonly CultureInfo culturaBrasileira = new CultureInfo("pt-BR");
 
     void Awake()
     {
@@ -20,19 +28,37 @@ public class EconomiaManager : MonoBehaviour
 
     void Start()
     {
-        // Garante que o texto comece com o valor correto logo ao dar Play
+        // Atualiza as duas interfaces assim que o jogo começa.
         AtualizarTextoSaldo();
     }
 
     public void AdicionarDinheiro(float valor)
     {
+        if (valor <= 0f)
+        {
+            Debug.LogWarning("O valor adicionado precisa ser maior que zero.");
+            return;
+        }
+
         saldoAtual += valor;
-        Debug.Log($"Pagamento recebido! Saldo atual: R$ {saldoAtual}");
+        Debug.Log($"Pagamento recebido! Saldo atual: R$ {saldoAtual.ToString("N2", culturaBrasileira)}");
         AtualizarTextoSaldo();
     }
 
     public bool ComprarHardware(ItemHardware item)
     {
+        if (item == null)
+        {
+            Debug.LogWarning("Não foi possível comprar: o item está nulo.");
+            return false;
+        }
+
+        if (item.preco < 0f)
+        {
+            Debug.LogWarning($"O item {item.nomeDoItem} possui um preço inválido.");
+            return false;
+        }
+
         if (saldoAtual >= item.preco)
         {
             saldoAtual -= item.preco;
@@ -44,12 +70,20 @@ public class EconomiaManager : MonoBehaviour
         return false;
     }
 
-    // Função separada para manter o código limpo (Clean Code)
     private void AtualizarTextoSaldo()
     {
+        string saldoFormatado = saldoAtual.ToString("N2", culturaBrasileira);
+
+        // Mantém funcionando o texto já usado pelas outras janelas.
         if (textoSaldo != null)
         {
-            textoSaldo.text = $"Saldo: R$ {saldoAtual}";
+            textoSaldo.text = $"Saldo: R$ {saldoFormatado}";
+        }
+
+        // Atualiza também o painel do jogador no Desktop.
+        if (textoSaldoDesktop != null)
+        {
+            textoSaldoDesktop.text = $"$ {saldoFormatado}";
         }
     }
 }

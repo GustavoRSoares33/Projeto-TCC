@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: f543066116ae1ae42aac26df180cfed5
+guid: 6d658acd48823d744a0c97c1cd1851f2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7250153028773362553
-    second: img_contratoIco_0
+      213: 2048148859028950850
+    second: "\xCDcone de Calend\xE1rio Branco Minimalista_0"
+  - first:
+      213: 8709769364448592605
+    second: "\xCDcone de Calend\xE1rio Branco Minimalista_1"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +116,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: img_contratoIco_0
+      name: "\xCDcone de Calend\xE1rio Branco Minimalista_0"
       rect:
         serializedVersion: 2
-        x: 0
+        x: 56
         y: 0
-        width: 400
-        height: 413
+        width: 1198
+        height: 1190
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +131,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 784cdb8bb38426b90800000000000000
-      internalID: -7250153028773362553
+      spriteID: 24fca85298c7c6c10800000000000000
+      internalID: 2048148859028950850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\xCDcone de Calend\xE1rio Branco Minimalista_1"
+      rect:
+        serializedVersion: 2
+        x: 1163
+        y: 810
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd2c98337115fd870800000000000000
+      internalID: 8709769364448592605
       vertices: []
       indices: 
       edges: []
@@ -148,7 +173,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      img_contratoIco_0: -7250153028773362553
+      "\xCDcone de Calend\xE1rio Branco Minimalista_0": 2048148859028950850
+      "\xCDcone de Calend\xE1rio Branco Minimalista_1": 8709769364448592605
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
