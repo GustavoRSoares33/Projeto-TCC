@@ -10,30 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2b8c87a00365d74a94529f018af4f62, type: 3}
-  m_Name: Contrato_CodeReview2
+  m_Name: Contrato_Secundario_001
   m_EditorClassIdentifier: Assembly-CSharp::Contrato
   categoria: 0
-  remetente: Marcos Oliveira
-  assunto: Pequeno problema no sistema
+  remetente: Gustavo Rodrigues
+  assunto: "Problemas na aplica\xE7\xE3o"
   ordemMissaoPrincipal: 1
-  tituloDaMissao: "C\xF3digo Errado"
+  tituloDaMissao: Contrato if
   descricao: 
-  nivelDificuldade: 0
-  tipoDaMissao: 1
-  pagamento: 100
-  xpGanho: 25
+  nivelDificuldade: 1
+  tipoDaMissao: 0
+  pagamento: 150
+  xpGanho: 30
   linhasDoCodigo:
   - fragmentos:
-    - string n = 20;
-    respostasIDs:
-    - bug
-  - fragmentos:
-    - for(int i = 0; i < n; i++){
+    - int saldo_atual = 100;
     respostasIDs: []
   - fragmentos:
-    - "\tprintln(\"Numero: \" + n);"
+    - 'if( '
+    - ' >= 50){'
     respostasIDs:
-    - bug
+    - saldo_atual
+  - fragmentos:
+    - "\tprint(\"Compra Aprovada!\");"
+    respostasIDs: []
   - fragmentos:
     - '}'
     respostasIDs: []

@@ -20,17 +20,22 @@ public class BotaoContratoUI : MonoBehaviour
     public Button botaoSelecionar;
     public Image imagemCartao;
 
-    [Header("Cores do Cartão")]
-    public Color corNormal = new Color32(38, 56, 61, 255);
-    public Color corSelecionado = new Color32(49, 75, 85, 255);
+    [Header("Destaque do cartão selecionado")]
+    [SerializeField] private Outline contornoSelecionado;
+
+    [SerializeField]
+    private Color corNormal =
+        new Color32(38, 58, 61, 255);
+
+    [SerializeField]
+    private Color corSelecionado =
+        new Color32(48, 77, 80, 255);
 
     [Header("Compatibilidade com o Prefab Antigo")]
     public Button botaoAceitar;
 
     private Contrato contratoDesteBotao;
     private GerenciadorLogica gerenciador;
-
-    private bool selecionado;
 
     private readonly CultureInfo culturaBrasileira =
         new CultureInfo("pt-BR");
@@ -46,6 +51,8 @@ public class BotaoContratoUI : MonoBehaviour
     {
         contratoDesteBotao = contratoSorteado;
         gerenciador = refGerenciador;
+
+        DefinirSelecionado(false);
 
         if (contratoDesteBotao == null)
         {
@@ -126,15 +133,18 @@ public class BotaoContratoUI : MonoBehaviour
         MensagemSelecionada?.Invoke(contratoDesteBotao, this);
     }
 
-    public void DefinirSelecionado(bool valor)
+    public void DefinirSelecionado(bool selecionado)
     {
-        selecionado = valor;
-
         if (imagemCartao != null)
         {
             imagemCartao.color = selecionado
                 ? corSelecionado
                 : corNormal;
+        }
+
+        if (contornoSelecionado != null)
+        {
+            contornoSelecionado.enabled = selecionado;
         }
     }
 

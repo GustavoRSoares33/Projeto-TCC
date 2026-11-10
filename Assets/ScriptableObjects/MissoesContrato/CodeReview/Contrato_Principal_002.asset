@@ -10,30 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2b8c87a00365d74a94529f018af4f62, type: 3}
-  m_Name: Contrato_CodigoVazado2
+  m_Name: Contrato_Principal_002
   m_EditorClassIdentifier: Assembly-CSharp::Contrato
-  categoria: 0
-  remetente: Junior
-  assunto: "Revis\xE3o de c\xF3digo"
-  ordemMissaoPrincipal: 1
-  tituloDaMissao: Contrato While
+  categoria: 1
+  remetente: Marcos Oliveira
+  assunto: Pequeno problema no sistema
+  ordemMissaoPrincipal: 2
+  tituloDaMissao: "C\xF3digo Errado"
   descricao: 
-  nivelDificuldade: 1
-  tipoDaMissao: 0
-  pagamento: 200
-  xpGanho: 30
+  nivelDificuldade: 0
+  tipoDaMissao: 1
+  pagamento: 100
+  xpGanho: 25
   linhasDoCodigo:
   - fragmentos:
-    - int x = 10;
-    respostasIDs: []
-  - fragmentos:
-    - while (
-    - ) {
+    - string n = 20;
     respostasIDs:
-    - x
+    - bug
   - fragmentos:
-    - "\tx--;"
+    - for(int i = 0; i < n; i++){
     respostasIDs: []
+  - fragmentos:
+    - "\tprintln(\"Numero: \" + n);"
+    respostasIDs:
+    - bug
   - fragmentos:
     - '}'
     respostasIDs: []

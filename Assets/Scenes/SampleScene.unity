@@ -476,7 +476,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 32276380}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 933205348}
+        m_TargetAssemblyTypeName: QuadroDeContratos, Assembly-CSharp
+        m_MethodName: MostrarMissoesSecundarias
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &32276380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2955,7 +2967,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -55.33136, y: 0}
+  m_AnchoredPosition: {x: -55.3313, y: 0}
   m_SizeDelta: {x: 60, y: 40}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &564769536
@@ -3763,7 +3775,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 679981237}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 933205348}
+        m_TargetAssemblyTypeName: QuadroDeContratos, Assembly-CSharp
+        m_MethodName: MostrarMissoesPrincipais
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &679981237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4675,7 +4699,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 837984694}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 933205348}
+        m_TargetAssemblyTypeName: QuadroDeContratos, Assembly-CSharp
+        m_MethodName: MostrarCaixaDeEntrada
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &837984694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5382,6 +5418,7 @@ GameObject:
   - component: {fileID: 933205348}
   - component: {fileID: 933205349}
   - component: {fileID: 933205350}
+  - component: {fileID: 933205351}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5494,16 +5531,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a709d9aa6572604087bd8597dbf4dce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuadroDeContratos
-  todosOsContratos:
-  - {fileID: 11400000, guid: c1b06bb0f44c3704f9a63b588562eedb, type: 2}
-  - {fileID: 11400000, guid: b16a3914bc9f3c94b8ea9fea419a64c5, type: 2}
-  - {fileID: 11400000, guid: 09629e32ddf718e4bab825f63bb73c6a, type: 2}
-  - {fileID: 11400000, guid: 8a9b827931ccbc3489bb91962580ecae, type: 2}
   prefabBotaoContrato: {fileID: 6998234058126060937, guid: 427b256ed7cf1204f8674c42524bc7f6, type: 3}
   localParaGerarBotoes: {fileID: 1054309552}
-  maxContratosNoQuadro: 3
-  tempoMinimoGeracao: 5
-  tempoMaximoGeracao: 15
+  sistemaMissoes: {fileID: 933205351}
+  gerenciadorLogica: {fileID: 933205345}
+  filtroAtual: 0
+  botaoCaixaEntrada: {fileID: 837984693}
+  botaoPrincipais: {fileID: 679981236}
+  botaoSecundarias: {fileID: 32276379}
+  botaoArquivadas: {fileID: 1598506261}
+  corBotaoNormal: {r: 0.14901961, g: 0.22745098, b: 0.23921569, a: 1}
+  corBotaoSelecionado: {r: 0.15294118, g: 0.52156866, b: 0.9098039, a: 1}
 --- !u!114 &933205349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5535,6 +5573,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc7c0951a9b13c347bec881918b5a321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SistemaSave
+--- !u!114 &933205351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933205344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 083a0e78e9b46624f85fd797e9113bf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SistemaMissoes
+  todosOsContratos:
+  - {fileID: 11400000, guid: c1b06bb0f44c3704f9a63b588562eedb, type: 2}
+  - {fileID: 11400000, guid: 8a9b827931ccbc3489bb91962580ecae, type: 2}
+  - {fileID: 11400000, guid: b16a3914bc9f3c94b8ea9fea419a64c5, type: 2}
+  - {fileID: 11400000, guid: 09629e32ddf718e4bab825f63bb73c6a, type: 2}
+  maxSecundariasDisponiveis: 3
+  intervaloSecundarias: 10
+  tempoParaProximaSecundaria: 0
+  ordemPrincipalConcluida: 0
 --- !u!1 &934383025
 GameObject:
   m_ObjectHideFlags: 0
@@ -6274,16 +6333,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1054309551}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
   m_Padding:
-    m_Left: 15
-    m_Right: 15
-    m_Top: 15
-    m_Bottom: 15
-  m_ChildAlignment: 4
-  m_Spacing: 15
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 1
+  m_Spacing: 10
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -7100,6 +7159,7 @@ MonoBehaviour:
   textoExperiencia: {fileID: 1641263905}
   textoCategoria: {fileID: 1127336660}
   botaoAceitarMissao: {fileID: 484948850}
+  textoBotaoAcao: {fileID: 699338619}
   gerenciadorLogica: {fileID: 933205345}
 --- !u!1 &1213574436
 GameObject:
@@ -9377,7 +9437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.14901961, g: 0.21960784, b: 0.23921569, a: 1}
+  m_Color: {r: 0.09019608, g: 0.15686275, b: 0.16862746, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9957,7 +10017,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1598506262}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 933205348}
+        m_TargetAssemblyTypeName: QuadroDeContratos, Assembly-CSharp
+        m_MethodName: MostrarArquivadas
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1598506262
 MonoBehaviour:
   m_ObjectHideFlags: 0

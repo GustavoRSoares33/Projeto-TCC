@@ -26,6 +26,7 @@ public class GerenciadorLogica : MonoBehaviour
     [Header("Missão Atual")]
     public Contrato contratoAtivo;
     private GameObject botaoDoContratoAtual; // NOVA LINHA: Guarda quem chamou a missão
+    private bool missaoFoiBemSucedida;
 
     [Header("Telas do Jogo")]
     public GameObject painelQuadroContratos;
@@ -315,6 +316,7 @@ public class GerenciadorLogica : MonoBehaviour
         missaoFinalizada = false;
         pagamentoProcessado = false;
         limiteDeErrosAtingido = false;
+        missaoFoiBemSucedida = false;
         bugsEncontradosNaMissao.Clear();
         botaoDoContratoAtual = botaoClicado;
         painelQuadroContratos.SetActive(false);
@@ -614,6 +616,8 @@ public class GerenciadorLogica : MonoBehaviour
 
         bool temDireitoARecompensa = !limiteDeErrosAtingido && acertosNaMissao >= 1;
 
+        missaoFoiBemSucedida = temDireitoARecompensa;
+
         float penalidadeTotal = errosCometidosNaMissao * Mathf.Max(0f, valorPenalidadePorErro);
         float penalidadeXP = errosCometidosNaMissao * Mathf.Max(0f, valorPenalidadeXPPorErro);
 
@@ -677,28 +681,58 @@ public class GerenciadorLogica : MonoBehaviour
 
     public void FecharFeedbackEVoltarAoQuadro()
     {
-        // Limpa o contrato e desliga o painel
-        contratoAtivo = null;
-        if (painelFeedback != null) painelFeedback.SetActive(false);
-
-        // Devolve o botão de missão para o pool ou desliga
-        if (botaoDoContratoAtual != null)
+        // Registra o resultado da missão.
+        if (contratoAtivo != null)
         {
-            botaoDoContratoAtual.SetActive(false);
-            botaoDoContratoAtual = null;
+            if (SistemaMissoes.Instancia != null)
+            {
+                SistemaMissoes.Instancia.RegistrarResultado(
+                    contratoAtivo,
+                    missaoFoiBemSucedida
+                );
+            }
+            else
+            {
+                Debug.LogError(
+                    "GerenciadorLogica: SistemaMissoes não foi encontrado na cena."
+                );
+            }
         }
 
-        // Limpeza visual
+        // Limpa a seleção e a visualização do DebugMail.
+        DebugMailUI debugMailUI = FindFirstObjectByType<DebugMailUI>();
+
+        if (debugMailUI != null)
+        {
+            debugMailUI.LimparSelecao();
+        }
+
+        // Limpa o contrato e desliga o painel.
+        contratoAtivo = null;
+
+        if (painelFeedback != null)
+            painelFeedback.SetActive(false);
+
+        // Limpa a referência do cartão.
+        botaoDoContratoAtual = null;
+
+        // Limpeza visual.
         LimparMinigames();
 
-        if (painelCodeReview != null) painelCodeReview.SetActive(false);
-        if (painelCodigoVazado != null) painelCodigoVazado.SetActive(false);
+        if (painelCodeReview != null)
+            painelCodeReview.SetActive(false);
 
-        // Volta para o quadro
-        if (painelQuadroContratos != null) painelQuadroContratos.SetActive(true);
+        if (painelCodigoVazado != null)
+            painelCodigoVazado.SetActive(false);
+
+        // Volta para o quadro.
+        if (painelQuadroContratos != null)
+            painelQuadroContratos.SetActive(true);
+
         janelaAtivaAtual = painelQuadroContratos;
 
-        if (textoMissao != null) textoMissao.text = "Escolha um novo contrato.";
+        if (textoMissao != null)
+            textoMissao.text = "Escolha um novo contrato.";
     }
 
     private void GerarBlocosAleatorios()

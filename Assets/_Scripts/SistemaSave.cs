@@ -13,6 +13,8 @@ public class SistemaSave : MonoBehaviour
     private const string ChaveXPNecessario = "DebugOS_XPNecessario";
     private const string ChaveAumentoXP = "DebugOS_AumentoXP";
 
+    private const string ChaveMissoes = "DebugOS_Missoes";
+
     private void Awake()
     {
         if (Instancia == null)
@@ -28,6 +30,17 @@ public class SistemaSave : MonoBehaviour
     private void Start()
     {
         Carregar();
+    }
+
+    private void OnApplicationPause(bool pausado)
+    {
+        if (pausado)
+            Salvar();
+    }
+
+    private void OnApplicationQuit()
+    {
+        Salvar();
     }
 
     public static bool TemSave()
@@ -71,6 +84,15 @@ public class SistemaSave : MonoBehaviour
             SistemaXP.Instancia.aumentoXPPorNivel
         );
 
+        // Salva também o estado do DebugMail.
+        if (SistemaMissoes.Instancia != null)
+        {
+            string estadoMissoes =
+                SistemaMissoes.Instancia.ExportarEstado();
+
+            PlayerPrefs.SetString(ChaveMissoes, estadoMissoes);
+        }
+
         PlayerPrefs.SetInt(ChaveSaveExiste, 1);
         PlayerPrefs.Save();
 
@@ -109,8 +131,33 @@ public class SistemaSave : MonoBehaviour
         SistemaXP.Instancia.aumentoXPPorNivel =
             PlayerPrefs.GetInt(ChaveAumentoXP, 25);
 
+        // Restaura o estado das missões.
+        if (SistemaMissoes.Instancia != null)
+        {
+            string estadoMissoes =
+                PlayerPrefs.GetString(ChaveMissoes, "");
+
+            if (!string.IsNullOrEmpty(estadoMissoes))
+            {
+                SistemaMissoes.Instancia.ImportarEstado(estadoMissoes);
+            }
+        }
+        else
+        {
+            Debug.LogWarning(
+                "SistemaMissoes não encontrado. O estado das missões não foi carregado."
+            );
+        }
+
         EconomiaManager.Instancia.AtualizarInterface();
         SistemaXP.Instancia.AtualizarInterface();
+
+        // Atualiza a lista visual depois de restaurar as missões.
+        QuadroDeContratos quadro =
+            FindFirstObjectByType<QuadroDeContratos>();
+
+        if (quadro != null)
+            quadro.AtualizarQuadro();
 
         Debug.Log("Progresso do DebugOS carregado com sucesso!");
     }
@@ -122,6 +169,7 @@ public class SistemaSave : MonoBehaviour
         PlayerPrefs.DeleteKey(ChaveNivel);
         PlayerPrefs.DeleteKey(ChaveXPNecessario);
         PlayerPrefs.DeleteKey(ChaveAumentoXP);
+        PlayerPrefs.DeleteKey(ChaveMissoes);
         PlayerPrefs.DeleteKey(ChaveSaveExiste);
 
         PlayerPrefs.Save();

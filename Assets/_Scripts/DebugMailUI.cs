@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -19,8 +20,9 @@ public class DebugMailUI : MonoBehaviour
     [SerializeField] private TMP_Text textoExperiencia;
     [SerializeField] private TMP_Text textoCategoria;
 
-    [Header("Botão de Aceitar")]
+    [Header("Botão de Ação")]
     [SerializeField] private Button botaoAceitarMissao;
+    [SerializeField] private TMP_Text textoBotaoAcao;
 
     [Header("Gerenciador do Jogo")]
     [SerializeField] private GerenciadorLogica gerenciadorLogica;
@@ -43,7 +45,12 @@ public class DebugMailUI : MonoBehaviour
         {
             botaoAceitarMissao.onClick.RemoveListener(AceitarMissao);
             botaoAceitarMissao.onClick.AddListener(AceitarMissao);
-            botaoAceitarMissao.interactable = false;
+
+            if (textoBotaoAcao == null)
+            {
+                textoBotaoAcao =
+                    botaoAceitarMissao.GetComponentInChildren<TMP_Text>(true);
+            }
         }
     }
 
@@ -69,29 +76,19 @@ public class DebugMailUI : MonoBehaviour
         if (contrato == null || cartao == null)
             return;
 
-        // Remove o destaque do cartão anteriormente selecionado.
         if (cartaoSelecionado != null)
-        {
             cartaoSelecionado.DefinirSelecionado(false);
-        }
 
         contratoSelecionado = contrato;
         cartaoSelecionado = cartao;
 
-        // Destaca o cartão atual.
         cartaoSelecionado.DefinirSelecionado(true);
 
         AtualizarVisualizacao();
+        AtualizarBotaoAcao();
 
         if (painelVisualizacao != null)
-        {
             painelVisualizacao.SetActive(true);
-        }
-
-        if (botaoAceitarMissao != null)
-        {
-            botaoAceitarMissao.interactable = true;
-        }
     }
 
     private void AtualizarVisualizacao()
@@ -100,10 +97,7 @@ public class DebugMailUI : MonoBehaviour
             return;
 
         if (textoRemetente != null)
-        {
-            textoRemetente.text =
-                contratoSelecionado.remetente;
-        }
+            textoRemetente.text = contratoSelecionado.remetente;
 
         if (textoAssunto != null)
         {
@@ -114,10 +108,7 @@ public class DebugMailUI : MonoBehaviour
         }
 
         if (textoDescricao != null)
-        {
-            textoDescricao.text =
-                contratoSelecionado.descricao;
-        }
+            textoDescricao.text = contratoSelecionado.descricao;
 
         if (textoDificuldade != null)
         {
@@ -147,13 +138,40 @@ public class DebugMailUI : MonoBehaviour
         }
     }
 
+    private void AtualizarBotaoAcao()
+    {
+        if (botaoAceitarMissao == null)
+            return;
+
+        bool arquivada =
+            SistemaMissoes.Instancia != null &&
+            SistemaMissoes.Instancia.EstaArquivada(contratoSelecionado);
+
+        bool concluida =
+            arquivada &&
+            SistemaMissoes.Instancia.FoiConcluidaComSucesso(contratoSelecionado);
+
+        botaoAceitarMissao.interactable = !arquivada;
+
+        if (textoBotaoAcao != null)
+        {
+            if (concluida)
+                textoBotaoAcao.text = "CONCLUÍDO";
+            else if (arquivada)
+                textoBotaoAcao.text = "ARQUIVADO";
+            else
+                textoBotaoAcao.text = "ACEITAR MISSÃO";
+        }
+    }
+
     private void AceitarMissao()
     {
         if (contratoSelecionado == null || cartaoSelecionado == null)
+            return;
+
+        if (SistemaMissoes.Instancia != null &&
+            SistemaMissoes.Instancia.EstaArquivada(contratoSelecionado))
         {
-            Debug.LogWarning(
-                "Selecione uma missão antes de tentar aceitá-la."
-            );
             return;
         }
 
@@ -169,6 +187,15 @@ public class DebugMailUI : MonoBehaviour
             contratoSelecionado,
             cartaoSelecionado.gameObject
         );
+    }
+
+    // Chamado quando o jogador retorna de uma missão.
+    public void LimparSelecao()
+    {
+        if (cartaoSelecionado != null)
+            cartaoSelecionado.DefinirSelecionado(false);
+
+        LimparVisualizacao();
     }
 
     private void LimparVisualizacao()
@@ -198,6 +225,11 @@ public class DebugMailUI : MonoBehaviour
             textoCategoria.text = "";
 
         if (botaoAceitarMissao != null)
+        {
             botaoAceitarMissao.interactable = false;
+
+            if (textoBotaoAcao != null)
+                textoBotaoAcao.text = "ACEITAR MISSÃO";
+        }
     }
 }

@@ -10,30 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2b8c87a00365d74a94529f018af4f62, type: 3}
-  m_Name: Contrato_CodigoVazado1
+  m_Name: Contrato_Principal_001
   m_EditorClassIdentifier: Assembly-CSharp::Contrato
   categoria: 1
-  remetente: Gustavo Rodrigues
-  assunto: "Problemas na aplica\xE7\xE3o"
-  ordemMissaoPrincipal: 2
-  tituloDaMissao: Contrato if
+  remetente: Tech Solutions
+  assunto: Seu primeiro desafio!
+  ordemMissaoPrincipal: 1
+  tituloDaMissao: Bug
   descricao: 
-  nivelDificuldade: 1
-  tipoDaMissao: 0
-  pagamento: 150
-  xpGanho: 30
+  nivelDificuldade: 0
+  tipoDaMissao: 1
+  pagamento: 80
+  xpGanho: 20
   linhasDoCodigo:
   - fragmentos:
-    - int saldo_atual = 100;
+    - int vida = 3;
     respostasIDs: []
   - fragmentos:
-    - 'if( '
-    - ' >= 50){'
+    - vidas == 0;
     respostasIDs:
-    - saldo_atual
+    - bug
   - fragmentos:
-    - "\tprint(\"Compra Aprovada!\");"
-    respostasIDs: []
-  - fragmentos:
-    - '}'
+    - return;
     respostasIDs: []
