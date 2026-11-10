@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2b8c87a00365d74a94529f018af4f62, type: 3}
   m_Name: Contrato_CodigoVazado2
   m_EditorClassIdentifier: Assembly-CSharp::Contrato
+  categoria: 0
+  remetente: Junior
+  assunto: "Revis\xE3o de c\xF3digo"
+  ordemMissaoPrincipal: 1
   tituloDaMissao: Contrato While
   descricao: 
   nivelDificuldade: 1

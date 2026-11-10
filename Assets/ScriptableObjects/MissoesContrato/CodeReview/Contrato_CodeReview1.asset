@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2b8c87a00365d74a94529f018af4f62, type: 3}
   m_Name: Contrato_CodeReview1
   m_EditorClassIdentifier: Assembly-CSharp::Contrato
+  categoria: 1
+  remetente: Tech Solutions
+  assunto: Seu primeiro desafio!
+  ordemMissaoPrincipal: 1
   tituloDaMissao: Bug
   descricao: 
   nivelDificuldade: 0

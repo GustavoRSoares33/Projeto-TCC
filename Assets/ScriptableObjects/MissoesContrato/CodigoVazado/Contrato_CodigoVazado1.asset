@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2b8c87a00365d74a94529f018af4f62, type: 3}
   m_Name: Contrato_CodigoVazado1
   m_EditorClassIdentifier: Assembly-CSharp::Contrato
+  categoria: 1
+  remetente: Gustavo Rodrigues
+  assunto: "Problemas na aplica\xE7\xE3o"
+  ordemMissaoPrincipal: 2
   tituloDaMissao: Contrato if
   descricao: 
-  nivelDificuldade: 0
+  nivelDificuldade: 1
   tipoDaMissao: 0
   pagamento: 150
   xpGanho: 30

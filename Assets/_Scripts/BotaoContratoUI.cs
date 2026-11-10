@@ -1,41 +1,146 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
+using System.Globalization;
 
 public class BotaoContratoUI : MonoBehaviour
 {
-    [Header("Componentes Visuais do Botão")]
+    [Header("Informações da Mensagem")]
     public TMP_Text textoTitulo;
-    public TMP_Text textoDificuldade;
-    public TMP_Text textoRecompensa;
-    public TMP_Text textoXp;
+    public TMP_Text textoRemetente;
+    public TMP_Text textoCategoria;
+
+    [Header("Informações da Missão")]
+    public TMP_Text textoValorDificuldade;
+    public TMP_Text textoValorRecompensa;
+    public TMP_Text textoValorXp;
+
+    [Header("Componentes de Seleção")]
+    public Button botaoSelecionar;
+    public Image imagemCartao;
+
+    [Header("Cores do Cartão")]
+    public Color corNormal = new Color32(38, 56, 61, 255);
+    public Color corSelecionado = new Color32(49, 75, 85, 255);
+
+    [Header("Compatibilidade com o Prefab Antigo")]
     public Button botaoAceitar;
 
     private Contrato contratoDesteBotao;
     private GerenciadorLogica gerenciador;
 
-    
+    private bool selecionado;
 
-    // Essa função é chamada pelo Quadro quando o botão é gerado na tela
-    public void ConfigurarBotao(Contrato contratoSorteado, GerenciadorLogica refGerenciador)
+    private readonly CultureInfo culturaBrasileira =
+        new CultureInfo("pt-BR");
+
+    // Evento utilizado pelo DebugMailUI para saber qual mensagem foi selecionada.
+    public static event Action<Contrato, BotaoContratoUI> MensagemSelecionada;
+
+    public Contrato ContratoAtual => contratoDesteBotao;
+
+    public void ConfigurarBotao(
+        Contrato contratoSorteado,
+        GerenciadorLogica refGerenciador)
     {
         contratoDesteBotao = contratoSorteado;
         gerenciador = refGerenciador;
 
-        // Preenche o visual
-        textoTitulo.text = contratoDesteBotao.tituloDaMissao;
-        textoDificuldade.text = $"Nível: {contratoDesteBotao.nivelDificuldade}";
-        textoRecompensa.text = $"R$ {contratoDesteBotao.pagamento}";
-        textoXp.text = $"XP: {contratoDesteBotao.xpGanho}";
+        if (contratoDesteBotao == null)
+        {
+            Debug.LogWarning("Não foi possível configurar o cartão: contrato nulo.");
+            return;
+        }
 
-        // Configura o clique via código (não precisa mais arrastar no Inspector!)
-        botaoAceitar.onClick.RemoveAllListeners();
-        botaoAceitar.onClick.AddListener(AoClicarNoContrato);
+        AtualizarInformacoesVisuais();
+
+        if (botaoSelecionar != null)
+        {
+            botaoSelecionar.onClick.RemoveListener(AoSelecionarMensagem);
+            botaoSelecionar.onClick.AddListener(AoSelecionarMensagem);
+        }
+        else
+        {
+            Debug.LogWarning(
+                $"O cartão {name} não possui o Button de seleção associado."
+            );
+        }
+
+        if (imagemCartao != null)
+            imagemCartao.color = corNormal;
     }
 
-    private void AoClicarNoContrato()
+    private void AtualizarInformacoesVisuais()
     {
-        // Envia o contrato selecionado e o próprio objeto do botão para o gerente
-        gerenciador.AceitarContrato(contratoDesteBotao, this.gameObject);
+        if (textoTitulo != null)
+        {
+            textoTitulo.text = !string.IsNullOrWhiteSpace(contratoDesteBotao.assunto)
+                ? contratoDesteBotao.assunto
+                : contratoDesteBotao.tituloDaMissao;
+        }
+
+        if (textoRemetente != null)
+        {
+            textoRemetente.text = contratoDesteBotao.remetente;
+        }
+
+        if (textoCategoria != null)
+        {
+            if (contratoDesteBotao.categoria ==
+                Contrato.CategoriaSolicitacao.Principal)
+            {
+                textoCategoria.text = "MISSÃO PRINCIPAL";
+                textoCategoria.color = new Color32(39, 133, 232, 255);
+            }
+            else
+            {
+                textoCategoria.text = "MISSÃO SECUNDÁRIA";
+                textoCategoria.color = new Color32(54, 184, 121, 255);
+            }
+        }
+
+        if (textoValorDificuldade != null)
+        {
+            textoValorDificuldade.text =
+                contratoDesteBotao.nivelDificuldade.ToString();
+        }
+
+        if (textoValorRecompensa != null)
+        {
+            textoValorRecompensa.text =
+                $"R$ {contratoDesteBotao.pagamento.ToString("N2", culturaBrasileira)}";
+        }
+
+        if (textoValorXp != null)
+        {
+            textoValorXp.text = $"{contratoDesteBotao.xpGanho} XP";
+        }
+    }
+
+    private void AoSelecionarMensagem()
+    {
+        if (contratoDesteBotao == null)
+            return;
+
+        MensagemSelecionada?.Invoke(contratoDesteBotao, this);
+    }
+
+    public void DefinirSelecionado(bool valor)
+    {
+        selecionado = valor;
+
+        if (imagemCartao != null)
+        {
+            imagemCartao.color = selecionado
+                ? corSelecionado
+                : corNormal;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (botaoSelecionar != null)
+            botaoSelecionar.onClick.RemoveListener(AoSelecionarMensagem);
     }
 }

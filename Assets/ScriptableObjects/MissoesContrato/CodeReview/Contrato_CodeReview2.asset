@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2b8c87a00365d74a94529f018af4f62, type: 3}
   m_Name: Contrato_CodeReview2
   m_EditorClassIdentifier: Assembly-CSharp::Contrato
+  categoria: 0
+  remetente: Marcos Oliveira
+  assunto: Pequeno problema no sistema
+  ordemMissaoPrincipal: 1
   tituloDaMissao: "C\xF3digo Errado"
   descricao: 
   nivelDificuldade: 0

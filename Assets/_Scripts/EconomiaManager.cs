@@ -29,7 +29,7 @@ public class EconomiaManager : MonoBehaviour
     void Start()
     {
         // Atualiza as duas interfaces assim que o jogo começa.
-        AtualizarTextoSaldo();
+        AtualizarInterface();
     }
 
     public void AdicionarDinheiro(float valor)
@@ -42,7 +42,8 @@ public class EconomiaManager : MonoBehaviour
 
         saldoAtual += valor;
         Debug.Log($"Pagamento recebido! Saldo atual: R$ {saldoAtual.ToString("N2", culturaBrasileira)}");
-        AtualizarTextoSaldo();
+        AtualizarInterface();
+        SistemaSave.Salvar();
     }
 
     public bool ComprarHardware(ItemHardware item)
@@ -62,7 +63,8 @@ public class EconomiaManager : MonoBehaviour
         if (saldoAtual >= item.preco)
         {
             saldoAtual -= item.preco;
-            AtualizarTextoSaldo();
+            AtualizarInterface();
+            SistemaSave.Salvar();
             return true;
         }
 
@@ -70,7 +72,7 @@ public class EconomiaManager : MonoBehaviour
         return false;
     }
 
-    private void AtualizarTextoSaldo()
+    public void AtualizarInterface()
     {
         string saldoFormatado = saldoAtual.ToString("N2", culturaBrasileira);
 

@@ -659,8 +659,15 @@ public class GerenciadorLogica : MonoBehaviour
                     Debug.LogWarning("EconomiaManager não encontrado; o pagamento não foi aplicado.");
                 }
 
-                // O XP é exibido no feedback. Ainda não existe um sistema de XP
-                // persistente/progressão conectado neste GerenciadorLogica.
+                // Aplica o XP uma única vez, respeitando as regras de recompensa.
+                if (SistemaXP.Instancia != null)
+                {
+                    SistemaXP.Instancia.AdicionarXP(xpRecebido);
+                }
+                else
+                {
+                    Debug.LogWarning("SistemaXP não encontrado; o XP foi exibido no feedback, mas não foi aplicado.");
+                }
             }
         }
 
