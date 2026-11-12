@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94be36e052c76e349972dcdbac3a18a6, type: 3}
+  m_Name: CertificacaoTecnica
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHardware
+  nomeDoItem: "Certifica\xE7\xE3o T\xE9cnica"
+  icone: {fileID: -4841907582585834267, guid: d5c69528110f6dc468cae52c6c769f37, type: 3}
+  descricao: 
+  preco: 25
+  tipoDePeca: 9
+  nivelMinimo: 1
+  tipoDeEfeito: 7
+  valorDoEfeito: 20

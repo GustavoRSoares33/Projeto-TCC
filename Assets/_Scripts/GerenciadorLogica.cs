@@ -61,6 +61,27 @@ public class GerenciadorLogica : MonoBehaviour
     public GameObject prefabBlocoBase; // O ÚNICO prefab que você vai usar!
     public int quantidadeTotalNaBarra = 6;
 
+    [Header("Temporizador do Minigame")]
+    public TMP_Text textoTemporizador;
+    [Min(1f)]
+    public float tempoBaseLacunas = 30f;
+
+    private float tempoRestanteLacunas;
+    private bool temporizadorLacunasAtivo = false;
+
+    [Header("Tempo de Carregamento dos Minigames")]
+    [Min(0f)]
+    public float tempoBaseEsperaMinigame = 3f;
+
+    [Min(0.1f)]
+    public float tempoMinimoEsperaMinigame = 0.5f;
+
+    [Header("Sistema de Dicas - IDE Profissional")]
+    public Button botaoDica;
+    public TMP_Text textoDica;
+
+    private bool dicaUsadaNaMissao = false;
+
     // Lista para lembrar quantos bugs o jogador já clicou nesta missão específica
     private List<string> bugsEncontradosNaMissao = new List<string>();
 
@@ -88,7 +109,8 @@ public class GerenciadorLogica : MonoBehaviour
     private bool missaoFinalizada = false;
     private bool pagamentoProcessado = false;
     private bool limiteDeErrosAtingido = false;
-    public int limiteDeErros = 3;
+    public int limiteDeErros = 1;
+    private int limiteDeErrosDaMissao = 1;
 
     private List<GameObject> lacunasGeradasNaMissao = new List<GameObject>();
 
@@ -114,7 +136,10 @@ public class GerenciadorLogica : MonoBehaviour
 
     void Update()
     {
-        textoData.text = Convert.ToString(DateTime.Now);
+        if (textoData != null)
+            textoData.text = Convert.ToString(DateTime.Now);
+
+        AtualizarTemporizadorLacunas();
     }
 
     // Função para o botão do ícone de Contratos
@@ -235,8 +260,6 @@ public class GerenciadorLogica : MonoBehaviour
     private void ConfigurarHUDGlobal(bool mostrarMissao, bool mostrarSaldo)
     {
         if (textoMissao != null) textoMissao.gameObject.SetActive(mostrarMissao);
-        if (EconomiaManager.Instancia != null && EconomiaManager.Instancia.textoSaldo != null)
-            EconomiaManager.Instancia.textoSaldo.gameObject.SetActive(mostrarSaldo);
     }
 
     private IEnumerator AnimarJanelaCrescendo(GameObject alvoVisual)
@@ -309,6 +332,8 @@ public class GerenciadorLogica : MonoBehaviour
             return;
         }
 
+        PararTemporizadorLacunas();
+
         contratoAtivo = contratoEscolhido;
         errosCometidosNaMissao = 0;
         acertosNaMissao = 0;
@@ -323,6 +348,36 @@ public class GerenciadorLogica : MonoBehaviour
 
         LimparMinigames();
 
+        dicaUsadaNaMissao = false;
+
+        if (textoDica != null)
+        {
+            textoDica.text = "";
+            textoDica.gameObject.SetActive(false);
+        }
+
+        AtualizarBotaoDica();
+
+        // Calcula o limite de erros considerando os upgrades comprados.
+        float bonusErros = 0f;
+
+        if (SistemaUpgrades.Instancia != null)
+        {
+            bonusErros = SistemaUpgrades.Instancia.ObterValorTotalEfeito(
+                ItemHardware.TipoEfeito.ErrosTolerados
+            );
+        }
+
+        // O bônus é convertido para um número inteiro de erros.
+        int errosExtras = Mathf.Max(0, Mathf.FloorToInt(bonusErros));
+
+        limiteDeErrosDaMissao = Mathf.Max(1, limiteDeErros) + errosExtras;
+
+        Debug.Log(
+            $"Limite de erros desta missão: {limiteDeErrosDaMissao} " +
+            $"(Base: {limiteDeErros}, bônus: +{errosExtras})"
+        );
+
         // --- NOVO SISTEMA DE ROTEAMENTO DINÂMICO ---
         GameObject telaAlvo = null;
 
@@ -336,13 +391,27 @@ public class GerenciadorLogica : MonoBehaviour
             }
         }
 
+        // Abre a janela da missão utilizando o sistema de janelas existente.
+        if (telaAlvo != null)
+        {
+            AbrirJanela(telaAlvo);
+        }
+        else
+        {
+            Debug.LogError(
+                "Não foi encontrado um painel para o tipo de missão: " +
+                contratoAtivo.tipoDaMissao
+            );
+            return;
+        }
+
+        // Inicia a geração do desafio correspondente.
         if (contratoAtivo.tipoDaMissao == Contrato.TipoDeMissao.PreencherLacuna)
         {
             StartCoroutine(GerarLinhaDeCodigoComAtraso(telaAlvo));
         }
         else if (contratoAtivo.tipoDaMissao == Contrato.TipoDeMissao.EncontrarBug)
         {
-            // Chama a nova corrotina que vamos criar abaixo!
             StartCoroutine(GerarCodeReviewComAtraso(telaAlvo));
         }
 
@@ -351,8 +420,7 @@ public class GerenciadorLogica : MonoBehaviour
             textoMissao.text = $"Contrato: {contratoAtivo.tituloDaMissao}";
             textoMissao.gameObject.SetActive(true);
         }
-        if (EconomiaManager.Instancia != null)
-            EconomiaManager.Instancia.textoSaldo.gameObject.SetActive(false);
+        
     }
 
     // Essa função será chamada pelo botão "Validar Código"
@@ -410,7 +478,7 @@ public class GerenciadorLogica : MonoBehaviour
         acertosNaMissao = acertosNestaEntrega;
         errosCometidosNaMissao += errosNestaEntrega;
 
-        if (errosCometidosNaMissao >= Mathf.Max(1, limiteDeErros))
+        if (errosCometidosNaMissao >= limiteDeErrosDaMissao)
         {
             limiteDeErrosAtingido = true;
             Debug.Log("Limite de erros atingido. O jogador não receberá dinheiro nem XP.");
@@ -456,7 +524,7 @@ public class GerenciadorLogica : MonoBehaviour
             if (imgBotao != null) imgBotao.color = new Color(0.8f, 0.2f, 0.2f, 0.5f);
             if (componenteBotao != null) componenteBotao.interactable = false;
 
-            if (errosCometidosNaMissao >= Mathf.Max(1, limiteDeErros))
+            if (errosCometidosNaMissao >= limiteDeErrosDaMissao)
             {
                 limiteDeErrosAtingido = true;
                 Debug.Log("Limite de erros atingido. O jogador não receberá dinheiro nem XP.");
@@ -467,10 +535,19 @@ public class GerenciadorLogica : MonoBehaviour
 
     private IEnumerator GerarLinhaDeCodigoComAtraso(GameObject telaDaMissao)
     {
-        // 1. Limpa o lixo antigo
-        foreach (Transform filho in areaCodigoPai) Destroy(filho.gameObject);
+        // Limpa imediatamente os elementos da tentativa anterior.
+        foreach (Transform filho in areaCodigoPai)
+            Destroy(filho.gameObject);
+
         lacunasGeradasNaMissao.Clear();
-        respostasEsperadasLacunas.Clear(); // Limpa as respostas antigas
+        respostasEsperadasLacunas.Clear();
+
+        // Calcula e aguarda o tempo de carregamento.
+        float tempoEspera = CalcularTempoEsperaMinigame();
+
+        Debug.Log($"Carregamento do minigame: {tempoEspera:F1} segundos.");
+
+        yield return new WaitForSeconds(tempoEspera);
 
         // 2. Monta o código linha por linha (Trocado para 'for' para sabermos o número da linha)
         for (int indexLinha = 0; indexLinha < contratoAtivo.linhasDoCodigo.Length; indexLinha++)
@@ -521,17 +598,37 @@ public class GerenciadorLogica : MonoBehaviour
         {
             telaDaMissao.SetActive(false);
             telaDaMissao.SetActive(true);
+
+            // Aguarda a atualização da tela antes de iniciar a contagem.
+            yield return null;
+
+            IniciarTemporizadorLacunas();
+        }
+        else
+        {
+            Debug.LogWarning("Não foi encontrada a tela do minigame de preencher lacunas.");
         }
     }
 
     private IEnumerator GerarCodeReviewComAtraso(GameObject telaDaMissao)
     {
-        // 1. Limpeza da missão anterior
-        foreach (Transform filho in areaCodeReviewPai) Destroy(filho.gameObject);
+
+        // Limpa imediatamente os elementos da tentativa anterior.
+        foreach (Transform filho in areaCodeReviewPai)
+            Destroy(filho.gameObject);
+
         bugsEncontradosNaMissao.Clear();
-        respostasEsperadasLacunas.Clear(); // Reaproveitamos a lista para guardar os IDs das linhas com bugs!
+        respostasEsperadasLacunas.Clear();
+
         acertosNaMissao = 0;
         totalDesafiosNaMissao = 0;
+
+        // Calcula e aguarda o tempo de carregamento.
+        float tempoEspera = CalcularTempoEsperaMinigame();
+
+        Debug.Log($"Carregamento do minigame: {tempoEspera:F1} segundos.");
+
+        yield return new WaitForSeconds(tempoEspera);
 
         // 2. Monta as linhas de código dinamicamente baseadas na Matriz
         for (int i = 0; i < contratoAtivo.linhasDoCodigo.Length; i++)
@@ -596,6 +693,17 @@ public class GerenciadorLogica : MonoBehaviour
         // Trava primeiro, antes de atualizar UI/pagar, para impedir chamadas repetidas.
         missaoFinalizada = true;
 
+        // Esconde a dica ao finalizar o contrato.
+        if (textoDica != null)
+        {
+            textoDica.text = "";
+            textoDica.gameObject.SetActive(false);
+        }
+
+        AtualizarBotaoDica();
+
+        PararTemporizadorLacunas();
+
         if (contratoAtivo.tipoDaMissao == Contrato.TipoDeMissao.EncontrarBug)
         {
             totalDesafiosNaMissao = respostasEsperadasLacunas.Count;
@@ -621,12 +729,45 @@ public class GerenciadorLogica : MonoBehaviour
         float penalidadeTotal = errosCometidosNaMissao * Mathf.Max(0f, valorPenalidadePorErro);
         float penalidadeXP = errosCometidosNaMissao * Mathf.Max(0f, valorPenalidadeXPPorErro);
 
+        // Bônus percentual de dinheiro dos upgrades
+        float bonusDinheiroPercentual = 0f;
+
+        if (SistemaUpgrades.Instancia != null)
+        {
+            bonusDinheiroPercentual =
+                SistemaUpgrades.Instancia.ObterValorTotalEfeito(
+                    ItemHardware.TipoEfeito.BonusDinheiroPercentual
+                );
+        }
+
+        // Calcula o pagamento após as penalidades
+        float pagamentoAposPenalidades = Mathf.Max(
+            0f,
+            pagamentoBase - penalidadeTotal
+        );
+
+        // Aplica o bônus percentual
         float totalReceber = temDireitoARecompensa
-            ? Mathf.Max(0f, pagamentoBase - penalidadeTotal)
+            ? pagamentoAposPenalidades *
+              (1f + Mathf.Max(0f, bonusDinheiroPercentual) / 100f)
             : 0f;
 
+        // Obtém o percentual de bônus de XP dos upgrades comprados.
+        float bonusXPPercentual = 0f;
+
+        if (SistemaUpgrades.Instancia != null)
+        {
+            bonusXPPercentual = SistemaUpgrades.Instancia.ObterValorTotalEfeito(
+                ItemHardware.TipoEfeito.BonusXPPercentual
+            );
+        }
+
+        // Primeiro aplica a penalidade por erros.
+        // Depois aplica o bônus percentual sobre o XP restante.
+        float xpAposPenalidades = Mathf.Max(0f, xpBase - penalidadeXP);
+
         float xpRecebido = temDireitoARecompensa
-            ? Mathf.Max(0f, xpBase - penalidadeXP)
+            ? xpAposPenalidades * (1f + Mathf.Max(0f, bonusXPPercentual) / 100f)
             : 0f;
 
         if (textoAcertos != null) textoAcertos.text = $"Acertos: <color=green>{acertosNaMissao}</color>";
@@ -636,7 +777,9 @@ public class GerenciadorLogica : MonoBehaviour
         if (textoPenalidades != null)
         {
             textoPenalidades.text = temDireitoARecompensa
-                ? $"Penalidades: <color=red>- ${penalidadeTotal:F2} | - {penalidadeXP:F0} XP</color>"
+                ? $"Penalidades: <color=red>- ${penalidadeTotal:F2} | - {penalidadeXP:F0} XP</color>\n" +
+                  $"Bônus de XP: <color=green>+ {bonusXPPercentual:F0}%</color> | " +
+                  $"Bônus de dinheiro: <color=green>+ {bonusDinheiroPercentual:F0}%</color>"
                 : "Penalidades: <color=red>Sem recompensa</color>";
         }
 
@@ -798,6 +941,183 @@ public class GerenciadorLogica : MonoBehaviour
             TMP_Text textoDoBloco = novoBloco.GetComponentInChildren<TMP_Text>();
             if (textoDoBloco != null) textoDoBloco.text = palavraFinal;
         }
+    }
+
+    private void IniciarTemporizadorLacunas()
+    {
+        float bonusTempo = 0f;
+
+        if (SistemaUpgrades.Instancia != null)
+        {
+            bonusTempo = SistemaUpgrades.Instancia.ObterValorTotalEfeito(
+                ItemHardware.TipoEfeito.BonusTempoMinigame
+            );
+        }
+
+        tempoRestanteLacunas = Mathf.Max(1f, tempoBaseLacunas + bonusTempo);
+        temporizadorLacunasAtivo = true;
+
+        if (textoTemporizador != null)
+        {
+            textoTemporizador.gameObject.SetActive(true);
+            AtualizarTextoTemporizador();
+        }
+
+        Debug.Log($"Temporizador iniciado: {tempoRestanteLacunas:F0} segundos.");
+    }
+
+    private void AtualizarTemporizadorLacunas()
+    {
+        if (!temporizadorLacunasAtivo || missaoFinalizada)
+            return;
+
+        tempoRestanteLacunas -= Time.deltaTime;
+
+        AtualizarTextoTemporizador();
+
+        if (tempoRestanteLacunas <= 0f)
+        {
+            tempoRestanteLacunas = 0f;
+            temporizadorLacunasAtivo = false;
+
+            // O tempo acabou: a tentativa é considerada uma falha.
+            acertosNaMissao = 0;
+            errosCometidosNaMissao++;
+
+            if (errosCometidosNaMissao >= limiteDeErrosDaMissao)
+            {
+                limiteDeErrosAtingido = true;
+            }
+
+            Debug.LogWarning("Tempo esgotado! O desafio de preencher lacunas falhou.");
+
+            AbrirTelaDeFeedback();
+        }
+    }
+
+    private void AtualizarTextoTemporizador()
+    {
+        if (textoTemporizador == null)
+            return;
+
+        int segundos = Mathf.CeilToInt(tempoRestanteLacunas);
+        int minutos = segundos / 60;
+        segundos %= 60;
+
+        textoTemporizador.text = $"{minutos:00}:{segundos:00}";
+    }
+
+    private void PararTemporizadorLacunas()
+    {
+        temporizadorLacunasAtivo = false;
+        tempoRestanteLacunas = 0f;
+
+        if (textoTemporizador != null)
+        {
+            textoTemporizador.gameObject.SetActive(false);
+        }
+    }
+
+    private float CalcularTempoEsperaMinigame()
+    {
+        float reducaoTempo = 0f;
+
+        if (SistemaUpgrades.Instancia != null)
+        {
+            reducaoTempo = SistemaUpgrades.Instancia.ObterValorTotalEfeito(
+                ItemHardware.TipoEfeito.ReducaoTempoEspera
+            );
+        }
+
+        reducaoTempo = Mathf.Max(0f, reducaoTempo);
+
+        float tempoFinal = tempoBaseEsperaMinigame - reducaoTempo;
+
+        return Mathf.Max(tempoMinimoEsperaMinigame, tempoFinal);
+    }
+
+    private void AtualizarBotaoDica()
+    {
+        if (botaoDica == null)
+            return;
+
+        bool possuiIDE = false;
+
+        if (SistemaUpgrades.Instancia != null)
+        {
+            possuiIDE = SistemaUpgrades.Instancia.PossuiEfeito(
+                ItemHardware.TipoEfeito.DicaPorMissao
+            );
+        }
+
+        botaoDica.interactable =
+            possuiIDE &&
+            !dicaUsadaNaMissao &&
+            contratoAtivo != null &&
+            !missaoFinalizada;
+    }
+
+    public void UsarDica()
+    {
+        if (contratoAtivo == null || missaoFinalizada || dicaUsadaNaMissao)
+            return;
+
+        if (SistemaUpgrades.Instancia == null ||
+            !SistemaUpgrades.Instancia.PossuiEfeito(
+                ItemHardware.TipoEfeito.DicaPorMissao))
+        {
+            return;
+        }
+
+        string dica = "";
+
+        if (contratoAtivo.tipoDaMissao == Contrato.TipoDeMissao.PreencherLacuna)
+        {
+            if (respostasEsperadasLacunas.Count == 0)
+                return;
+
+            int indice = UnityEngine.Random.Range(
+                0,
+                respostasEsperadasLacunas.Count
+            );
+
+            dica = "DICA: Uma das respostas corretas é: " +
+                   respostasEsperadasLacunas[indice];
+        }
+        else if (contratoAtivo.tipoDaMissao == Contrato.TipoDeMissao.EncontrarBug)
+        {
+            if (respostasEsperadasLacunas.Count == 0)
+                return;
+
+            int indice = UnityEngine.Random.Range(
+                0,
+                respostasEsperadasLacunas.Count
+            );
+
+            string idLinha = respostasEsperadasLacunas[indice];
+
+            string numeroLinha = idLinha.Replace("linha_", "");
+
+            if (!int.TryParse(numeroLinha, out int numero))
+                return;
+
+            dica = "DICA: Há um bug na linha " + (numero + 1) + ".";
+        }
+
+        if (string.IsNullOrEmpty(dica))
+            return;
+
+        dicaUsadaNaMissao = true;
+
+        if (textoDica != null)
+        {
+            textoDica.text = dica;
+            textoDica.gameObject.SetActive(true);
+        }
+
+        AtualizarBotaoDica();
+
+        Debug.Log(dica);
     }
 
 }

@@ -15,6 +15,9 @@ public class SistemaSave : MonoBehaviour
 
     private const string ChaveMissoes = "DebugOS_Missoes";
 
+    // Nova chave para salvar os upgrades comprados.
+    private const string ChaveUpgrades = "DebugOS_Upgrades";
+
     private void Awake()
     {
         if (Instancia == null)
@@ -84,13 +87,22 @@ public class SistemaSave : MonoBehaviour
             SistemaXP.Instancia.aumentoXPPorNivel
         );
 
-        // Salva também o estado do DebugMail.
+        // Salva o estado do DebugMail.
         if (SistemaMissoes.Instancia != null)
         {
             string estadoMissoes =
                 SistemaMissoes.Instancia.ExportarEstado();
 
             PlayerPrefs.SetString(ChaveMissoes, estadoMissoes);
+        }
+
+        // Salva os upgrades comprados.
+        if (SistemaUpgrades.Instancia != null)
+        {
+            string estadoUpgrades =
+                SistemaUpgrades.Instancia.ExportarEstado();
+
+            PlayerPrefs.SetString(ChaveUpgrades, estadoUpgrades);
         }
 
         PlayerPrefs.SetInt(ChaveSaveExiste, 1);
@@ -131,7 +143,7 @@ public class SistemaSave : MonoBehaviour
         SistemaXP.Instancia.aumentoXPPorNivel =
             PlayerPrefs.GetInt(ChaveAumentoXP, 25);
 
-        // Restaura o estado das missões.
+        // Restaura as missões.
         if (SistemaMissoes.Instancia != null)
         {
             string estadoMissoes =
@@ -149,10 +161,28 @@ public class SistemaSave : MonoBehaviour
             );
         }
 
+        // Restaura os upgrades comprados.
+        if (SistemaUpgrades.Instancia != null)
+        {
+            string estadoUpgrades =
+                PlayerPrefs.GetString(ChaveUpgrades, "");
+
+            if (!string.IsNullOrEmpty(estadoUpgrades))
+            {
+                SistemaUpgrades.Instancia.ImportarEstado(estadoUpgrades);
+            }
+        }
+        else
+        {
+            Debug.LogWarning(
+                "SistemaUpgrades não encontrado. Os upgrades não foram carregados."
+            );
+        }
+
         EconomiaManager.Instancia.AtualizarInterface();
         SistemaXP.Instancia.AtualizarInterface();
 
-        // Atualiza a lista visual depois de restaurar as missões.
+        // Atualiza a lista visual das missões.
         QuadroDeContratos quadro =
             FindFirstObjectByType<QuadroDeContratos>();
 
@@ -170,7 +200,17 @@ public class SistemaSave : MonoBehaviour
         PlayerPrefs.DeleteKey(ChaveXPNecessario);
         PlayerPrefs.DeleteKey(ChaveAumentoXP);
         PlayerPrefs.DeleteKey(ChaveMissoes);
+
+        // Apaga também os upgrades salvos.
+        PlayerPrefs.DeleteKey(ChaveUpgrades);
+
         PlayerPrefs.DeleteKey(ChaveSaveExiste);
+
+        // Limpa os upgrades da memória, caso o sistema esteja ativo.
+        if (SistemaUpgrades.Instancia != null)
+        {
+            SistemaUpgrades.Instancia.LimparCompras();
+        }
 
         PlayerPrefs.Save();
 

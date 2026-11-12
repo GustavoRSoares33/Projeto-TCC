@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 94be36e052c76e349972dcdbac3a18a6, type: 3}
-  m_Name: Processador_de_Alta_Performance
+  m_Name: SSD
   m_EditorClassIdentifier: Assembly-CSharp::ItemHardware
-  nomeDoItem: Processador de Alta Performance
-  icone: {fileID: 0}
-  descricao: "Processador de alta performance para compilar l\xF3gicas complexas
-    sem gargalos."
-  preco: 1200
-  ganhoDePerformance: 0
-  tipoDePeca: 0
+  nomeDoItem: SSD
+  icone: {fileID: 3880414415526076420, guid: f2a5e94590af5a04a9daa634482228d2, type: 3}
+  descricao: 
+  preco: 12
+  tipoDePeca: 6
+  nivelMinimo: 2
+  tipoDeEfeito: 3
+  valorDoEfeito: 1.5

@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 94be36e052c76e349972dcdbac3a18a6, type: 3}
-  m_Name: Cooler_de_Alta_Performance
+  m_Name: TecladoMecanico
   m_EditorClassIdentifier: Assembly-CSharp::ItemHardware
-  nomeDoItem: Cooler de Alta Performance
-  icone: {fileID: 0}
-  descricao: "Air cooler eficiente para manter o gerenciamento t\xE9rmico do setup
-    sob controle."
-  preco: 250
-  ganhoDePerformance: 0
-  tipoDePeca: 3
+  nomeDoItem: "Teclado Mec\xE2nico"
+  icone: {fileID: -5056952253432529082, guid: 6d394a7a821d4f242899289126abc275, type: 3}
+  descricao: 
+  preco: 12
+  tipoDePeca: 5
+  nivelMinimo: 2
+  tipoDeEfeito: 2
+  valorDoEfeito: 15
